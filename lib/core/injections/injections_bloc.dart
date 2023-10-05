@@ -1,7 +1,13 @@
-
 part of 'injections.dart';
 
-void injectBloc(){
-  getIt.registerFactory<HomeBloc>(() => HomeBloc(getIt<RequestCameraPermissionUseCase>()));
-  getIt.registerFactory<LightBloc>(() => LightBloc(getIt<ToggleTorchUseCase>()));
+void injectBloc() {
+  getIt.registerFactory<HomeBloc>(() => HomeBloc(
+        takePictureUseCase: getIt<TakePictureUseCase>(),
+        requestCameraPermissionUseCase: getIt<RequestCameraPermissionUseCase>(),
+        savePictureUseCase: getIt<SavePictureUseCase>(),
+      ));
+
+  getIt.registerFactory<LightBloc>(() => LightBloc(
+        getIt<ToggleTorchUseCase>(),
+      ));
 }

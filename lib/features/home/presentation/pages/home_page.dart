@@ -67,7 +67,13 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<HomeBloc>().add(RequestCameraPermissionEvent());
+          if (context.read<HomeBloc>().state.isCameraOpen) {
+            context
+                .read<HomeBloc>()
+                .add(TakePictureEvent(controller: controller));
+          } else {
+            context.read<HomeBloc>().add(RequestCameraPermissionEvent());
+          }
         },
         child: const Icon(
           Icons.camera_alt,

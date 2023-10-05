@@ -8,3 +8,15 @@ class HomeEvent extends Equatable {
 class RequestCameraPermissionEvent extends HomeEvent {
 }
 
+class TakePictureEvent extends HomeEvent {
+
+  final CameraController controller;
+
+  TakePictureEvent({
+    required this.controller,
+  });
+
+  @override
+  List<Object> get props => [controller];
+}
+
