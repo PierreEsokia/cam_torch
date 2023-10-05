@@ -46,6 +46,6 @@ app.*.map.json
 **/**.gr.dart
 **/**.g.dart
 **/**.lock
-*.lock
+**.lock
 
 pubspec.lock

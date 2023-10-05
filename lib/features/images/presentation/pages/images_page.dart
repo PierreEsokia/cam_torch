@@ -1,6 +1,8 @@
 import 'package:auto_route/annotations.dart';
+import 'package:cam_torch/features/images/presentation/bloc/images_bloc.dart';
 import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class ImagesPage extends StatefulWidget {
@@ -14,13 +16,49 @@ class ImagesPage extends StatefulWidget {
 
 class _ImagesPageState extends State<ImagesPage> {
   @override
+  void initState() {
+    super.initState();
+    context.read<ImagesBloc>().add(LoadImagesEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rapport'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: const [
-          TorchButton()
+          TorchButton(),
         ],
+      ),
+      body: BlocBuilder<ImagesBloc, ImagesState>(
+        buildWhen: (previous, current) => previous.images != current.images,
+        builder: (context, state) {
+          if (state is LoadingImagesState) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is FailedLoadImagesState) {
+            return const Center(
+              child: Text(
+                'Erreur lors du chargement des images',
+              ),
+            );
+          }
+          state as LoadedImagesState;
+          return GridView.builder(
+            itemCount: state.images?.length ?? 0,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+            ),
+            itemBuilder: (context, index) {
+              final file = state.images![index];
+              return Center(
+                child: Image.file(file),
+              );
+            },
+          );
+        },
       ),
     );
   }

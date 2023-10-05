@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cam_torch/core/utils/app_router.dart';
 import 'package:cam_torch/features/home/presentation/bloc/home_bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
@@ -61,7 +62,14 @@ class _HomePageState extends State<HomePage> {
               },
             );
           }
-          return const SizedBox.shrink();
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                context.router.push(const ImagesRoute());
+              },
+              child: const Text('Rapport'),
+            ),
+          );
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
