@@ -1,8 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cam_torch/core/utils/app_router.dart';
-import 'package:cam_torch/features/others/light/light_bloc.dart';
+import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -23,17 +22,8 @@ class _HomePageState extends State<HomePage> {
         title: const Text(
           'Accueil',
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.read<LightBloc>().add(ToggleLightEvent());
-            },
-            icon: BlocBuilder<LightBloc, LightState>(
-              builder: (context, state) => state.isLightUp
-                  ? const Icon(Icons.lightbulb_rounded)
-                  : const Icon(Icons.lightbulb_outline),
-            ),
-          )
+        actions: const [
+          TorchButton()
         ],
       ),
       body: Center(

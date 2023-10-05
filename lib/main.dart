@@ -1,7 +1,7 @@
 import 'package:cam_torch/core/injections/injections.dart';
 import 'package:cam_torch/core/utils/app_router.dart';
 import 'package:cam_torch/features/home/presentation/bloc/home_bloc.dart';
-import 'package:cam_torch/features/others/light/light_bloc.dart';
+import 'package:cam_torch/features/others/light/bloc/light_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

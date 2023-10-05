@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
 
 @RoutePage()
@@ -17,6 +18,9 @@ class _ImagesPageState extends State<ImagesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rapport'),
+        actions: const [
+          TorchButton()
+        ],
       ),
     );
   }
