@@ -1,7 +1,6 @@
-
-
 part of 'injections.dart';
 
-void injectionsUsecase(){
+void injectionsUsecase() {
   getIt.registerLazySingleton(() => ToggleTorchUseCase());
+  getIt.registerLazySingleton(() => RequestCameraPermissionUseCase());
 }

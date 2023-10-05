@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cam_torch/core/utils/app_router.dart';
+import 'package:cam_torch/features/home/presentation/bloc/home_bloc.dart';
+import 'package:camera/camera.dart';
 import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -14,6 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late CameraController controller;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,20 +32,46 @@ class _HomePageState extends State<HomePage> {
           'Accueil',
         ),
         actions: const [
-          TorchButton()
+          TorchButton(),
         ],
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            context.router.push(const ImagesRoute());
-          },
-          child: const Text('Rapport'),
-        ),
+      body: BlocBuilder<HomeBloc, HomeState>(
+        buildWhen: (previous, current) =>
+            previous.isCameraOpen != current.isCameraOpen,
+        builder: (context, state) {
+          if (state.isCameraOpen) {
+            return FutureBuilder<List<CameraDescription>>(
+              future: availableCameras(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  controller = CameraController(
+                    snapshot.data![1],
+                    ResolutionPreset.max,
+                  );
+                  return FutureBuilder(
+                    future: controller.initialize(),
+                    builder: (context, snap) {
+                      return CameraPreview(controller);
+                    },
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.camera_alt),
+        onPressed: () {
+          context.read<HomeBloc>().add(RequestCameraPermissionEvent());
+        },
+        child: const Icon(
+          Icons.camera_alt,
+        ),
       ),
     );
   }

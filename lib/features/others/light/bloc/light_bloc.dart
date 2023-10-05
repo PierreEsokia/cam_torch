@@ -17,6 +17,15 @@ class LightBloc extends Bloc<LightEvent, LightState> {
   Future<void> _onToggleTorch(
       ToggleLightEvent event, Emitter<LightState> emit) async {
     final res = await toggleTorchUseCase(state.isLightUp);
-    res.fold((l) => emit(state.copyWith(isError: true)), (r) => emit(state.toggleLight()));
+    res.fold(
+      (l) => emit(
+        state.copyWith(
+          isError: true,
+        ),
+      ),
+      (r) => emit(
+        state.toggleLight(),
+      ),
+    );
   }
 }
