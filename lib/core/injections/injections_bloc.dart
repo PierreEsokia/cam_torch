@@ -14,6 +14,9 @@ void injectBloc() {
   );
 
   getIt.registerFactory<ImagesBloc>(
-    () => ImagesBloc(getIt<LoadImagesUseCase>()),
+    () => ImagesBloc(
+      loadImagesUseCase: getIt<LoadImagesUseCase>(),
+      deleteImageUseCase: getIt<DeleteImageUseCase>(),
+    ),
   );
 }

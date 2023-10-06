@@ -1,5 +1,5 @@
 import 'failure.dart';
 
-class LoadFileFailure extends Failure {
+class LoadFileFailure extends Failure {}
 
-}
+class DeleteFileFailure extends Failure {}

@@ -2,6 +2,7 @@ import 'package:cam_torch/features/home/domain/usecase/request_camera_permission
 import 'package:cam_torch/features/home/domain/usecase/save_picture_use_case.dart';
 import 'package:cam_torch/features/home/domain/usecase/take_picture_use_case.dart';
 import 'package:camera/camera.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,6 +44,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onTakePictureEvent(
       TakePictureEvent event, Emitter<HomeState> emit) async {
     final res = await takePictureUseCase(event.controller);
-    res.fold((l) => null, (r) => savePictureUseCase(r),);
+    if (res.isRight()) {
+      final sav = await savePictureUseCase((res as Right).value);
+      sav.fold(
+        (l) => null,
+        (r) => emit(
+          state.copyWith(
+            isCameraOpen: false,
+          ),
+        ),
+      );
+    }
   }
 }

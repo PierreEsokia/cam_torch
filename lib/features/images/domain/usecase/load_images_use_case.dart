@@ -4,6 +4,7 @@ import 'package:cam_torch/core/error/failure/failure.dart';
 import 'package:cam_torch/core/error/failure/file_failure.dart';
 import 'package:cam_torch/core/utils/use_case.dart';
 import 'package:dartz/dartz.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LoadImagesUseCase extends UseCase<List<File>, dynamic> {
@@ -15,6 +16,7 @@ class LoadImagesUseCase extends UseCase<List<File>, dynamic> {
           .listSync()
           .whereType<File>()
           .toList()
+          .where((element) => basename(element.path).contains('jpg'))
           .map((e) => e)
           .toList();
       return Right(files);

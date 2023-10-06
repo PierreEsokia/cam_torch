@@ -50,11 +50,35 @@ class _ImagesPageState extends State<ImagesPage> {
             itemCount: state.images?.length ?? 0,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
             ),
             itemBuilder: (context, index) {
               final file = state.images![index];
-              return Center(
-                child: Image.file(file),
+              return Stack(
+                alignment: AlignmentDirectional.topEnd,
+                children: [
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      if (value == 1) {
+                        context.read<ImagesBloc>().add(DeleteImageEvent(
+                              image: file,
+                            ));
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 1,
+                        child: Text(
+                          'Supprimer',
+                        ),
+                      )
+                    ],
+                  ),
+                  Center(
+                    child: Image.file(file),
+                  ),
+                ],
               );
             },
           );

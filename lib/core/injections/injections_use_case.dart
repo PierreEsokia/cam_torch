@@ -11,4 +11,5 @@ void injectionsUseCase() {
 
   ///Inject for ImagesBloc
   getIt.registerLazySingleton(() => LoadImagesUseCase());
+  getIt.registerLazySingleton(() => DeleteImageUseCase());
 }
