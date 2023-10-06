@@ -1,25 +1,32 @@
 part of 'home_bloc.dart';
 
-class HomeState extends Equatable {
+enum HomeStatus { none, take, save }
 
-  final bool isCameraOpen;
+class HomeState extends Equatable {
+  final HomeStatus status;
+  final XFile? image;
 
   const HomeState({
-    required this.isCameraOpen,
+    required this.status,
+    this.image,
   });
 
   @override
-  List<Object> get props => [isCameraOpen];
+  List<Object?> get props => [status, image];
 
   HomeState copyWith({
-    bool? isCameraOpen,
+    HomeStatus? status,
+    XFile? image,
   }) {
     return HomeState(
-      isCameraOpen: isCameraOpen ?? this.isCameraOpen,
+      status: status ?? this.status,
+      image: image ?? this.image,
     );
   }
 }
 
-class HomeInitial extends HomeState {
-  const HomeInitial({super.isCameraOpen = false});
+class InitialState extends HomeState {
+  const InitialState({
+    super.status = HomeStatus.none,
+  });
 }

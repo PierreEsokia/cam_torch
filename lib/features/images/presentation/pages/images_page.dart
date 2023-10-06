@@ -1,8 +1,8 @@
 import 'package:auto_route/annotations.dart';
 import 'package:cam_torch/features/images/presentation/bloc/images_bloc.dart';
-import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart' hide context;
 
 @RoutePage()
 class ImagesPage extends StatefulWidget {
@@ -19,6 +19,7 @@ class _ImagesPageState extends State<ImagesPage> {
   void initState() {
     super.initState();
     context.read<ImagesBloc>().add(LoadImagesEvent());
+
   }
 
   @override
@@ -27,9 +28,6 @@ class _ImagesPageState extends State<ImagesPage> {
       appBar: AppBar(
         title: const Text('Rapport'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: const [
-          TorchButton(),
-        ],
       ),
       body: BlocBuilder<ImagesBloc, ImagesState>(
         buildWhen: (previous, current) => previous.images != current.images,
@@ -78,6 +76,21 @@ class _ImagesPageState extends State<ImagesPage> {
                   Center(
                     child: Image.file(file),
                   ),
+                  Align(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: Container(
+                      color: Colors.black26,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          basename(file.path),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               );
             },

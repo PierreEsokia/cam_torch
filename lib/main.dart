@@ -46,7 +46,7 @@ class App extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,
           ),
-          useMaterial3: false,
+          useMaterial3: true,
         ),
         routerConfig: appRouter.config(),
       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cam_torch/core/utils/app_router.dart';
 import 'package:cam_torch/features/home/presentation/bloc/home_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:cam_torch/features/others/light/widgets/torch_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_painter/image_painter.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -18,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late CameraController controller;
+  final _imageKey = GlobalKey<ImagePainterState>();
 
   @override
   void initState() {
@@ -26,6 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final homeBloc = context.read<HomeBloc>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -37,10 +42,9 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-            previous.isCameraOpen != current.isCameraOpen,
+        buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
-          if (state.isCameraOpen) {
+          if (state.status == HomeStatus.take) {
             return FutureBuilder<List<CameraDescription>>(
               future: availableCameras(),
               builder: (context, snapshot) {
@@ -61,6 +65,11 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             );
+          } else if (state.status == HomeStatus.save) {
+            return ImagePainter.file(
+              File(state.image!.path),
+              key: _imageKey,
+            );
           }
           return Center(
             child: ElevatedButton(
@@ -74,17 +83,35 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (context.read<HomeBloc>().state.isCameraOpen) {
-            context
-                .read<HomeBloc>()
-                .add(TakePictureEvent(controller: controller));
-          } else {
-            context.read<HomeBloc>().add(RequestCameraPermissionEvent());
+        onPressed: () async {
+          if (homeBloc.state.status == HomeStatus.take) {
+            homeBloc.add(TakePictureEvent(controller: controller));
+          } else if (homeBloc.state.status == HomeStatus.none) {
+            homeBloc.add(RequestCameraPermissionEvent());
+          } else if (homeBloc.state.status == HomeStatus.save) {
+            final rawImage = await _imageKey.currentState?.exportImage();
+            if (rawImage != null) {
+              homeBloc.add(SavePictureEvent(image: rawImage));
+            }
           }
         },
-        child: const Icon(
-          Icons.camera_alt,
+        child: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case HomeStatus.none:
+                return const Icon(
+                  Icons.camera_outlined,
+                );
+              case HomeStatus.take:
+                return const Icon(
+                  Icons.camera_alt_outlined,
+                );
+              case HomeStatus.save:
+                return const Icon(
+                  Icons.save_outlined,
+                );
+            }
+          },
         ),
       ),
     );

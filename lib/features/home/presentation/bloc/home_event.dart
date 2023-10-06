@@ -20,3 +20,15 @@ class TakePictureEvent extends HomeEvent {
   List<Object> get props => [controller];
 }
 
+class SavePictureEvent extends HomeEvent {
+
+  final Uint8List image;
+
+  SavePictureEvent({
+    required this.image,
+  });
+
+  @override
+  List<Object> get props => [image];
+}
+
