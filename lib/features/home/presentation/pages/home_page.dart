@@ -56,7 +56,14 @@ class _HomePageState extends State<HomePage> {
                   return FutureBuilder(
                     future: controller.initialize(),
                     builder: (context, snap) {
-                      return CameraPreview(controller);
+                      if (!controller.value.isInitialized)
+                        return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          const Spacer(),
+                          CameraPreview(controller),
+                        ],
+                      );
                     },
                   );
                 }
@@ -91,7 +98,9 @@ class _HomePageState extends State<HomePage> {
           } else if (homeBloc.state.status == HomeStatus.save) {
             final rawImage = await _imageKey.currentState?.exportImage();
             if (rawImage != null) {
-              homeBloc.add(SavePictureEvent(image: rawImage));
+              homeBloc.add(SavePictureEvent(
+                image: rawImage,
+              ));
             }
           }
         },
@@ -115,5 +124,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 }
